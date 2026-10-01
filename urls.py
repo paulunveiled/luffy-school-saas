@@ -25,7 +25,7 @@ from fees.views import bank_page, fees_page
 from gradebook.views import marking_page
 from home.views import home_page
 from notices.views import settings_page
-from schools.views import school_site
+from schools.views import school_site, verify_qr_result
 from results.views import (
     broadsheet_page,
     card_index_page,
@@ -86,6 +86,7 @@ urlpatterns = [
     # The result checker: a family with no account opens a card with the
     # admission number and the PIN from a slip (docs/messaging.md D11).
     path("check/", checker_page, name="result-checker"),
+    path("verify/", verify_qr_result, name="verify-qr"),
 ]
 
 from django.conf import settings
