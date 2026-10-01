@@ -349,6 +349,9 @@ def _portal_only(request):
     own deployment configuration — it knows its portal host, and having the
     server name it would put the same fact in two places.
     """
+    from django.conf import settings
+    if settings.DEMO_SINGLE_HOST:
+        return
     if getattr(request, "school", None) is not None:
         raise Http404("Sign in on the portal host.")
 
