@@ -78,6 +78,9 @@ class CreatedOut(Schema):
 
 
 def _portal_only(request):
+    from django.conf import settings
+    if settings.DEMO_SINGLE_HOST:
+        return
     if getattr(request, "school", None) is not None:
         raise Http404("This screen is on the portal host.")
 
