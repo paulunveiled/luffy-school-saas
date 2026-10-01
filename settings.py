@@ -22,6 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent
 # place.
 DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 
+# Development-only single-host demo mode for local Codespace testing.
+# When enabled, URL routing is modified to bypass the separate security portal address.
+DEMO_SINGLE_HOST = DEBUG and os.environ.get("DEMO_SINGLE_HOST", "0") == "1"
+
 # **No usable default outside development.** A `SECRET_KEY` is what signs
 # session cookies and CSRF tokens, so a known one is not a weaker key — it is no
 # key at all: anybody holding this repository could mint a session for any
