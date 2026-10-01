@@ -1,5 +1,7 @@
 """The platform admin page's frame."""
 
+from django.shortcuts import render
+from .utils.qr import verify_signature
 from django.http import Http404
 from django.shortcuts import render
 
@@ -54,3 +56,27 @@ def school_site(request):
             "portal_host": portal_host(),
         },
     )
+
+def verify_qr_result(request):
+    # Convert incoming URL parameters to a Python dictionary
+    payload = request.GET.dict()
+    
+    # Extract the signature from the payload
+    provided_signature = payload.pop('sig', None)
+    
+    if not provided_signature:
+        return render(request, 'schools/verify_result.html', {
+            'is_valid': False,
+            'error_message': 'Invalid QR Code. No cryptographic signature found.'
+        })
+    
+    # Check if the remaining data matches the signature
+    is_valid = verify_signature(payload, provided_signature)
+    
+    context = {
+        'is_valid': is_valid,
+        'student_data': payload if is_valid else None,
+        'error_message': 'FORGERY DETECTED: This document has been tampered with.' if not is_valid else None
+    }
+    
+    return render(request, 'schools/verify_result.html', context)
