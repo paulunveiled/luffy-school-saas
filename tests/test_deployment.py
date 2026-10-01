@@ -268,6 +268,26 @@ class HealthzTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class DemoModeTests(SimpleTestCase):
+    def test_demo_single_host_ignored_in_production(self):
+        """DEMO_SINGLE_HOST must be impossible to trigger if DEBUG=False.
+
+        Asserted by running a subprocess that imports settings with
+        DEMO_SINGLE_HOST=1 and DJANGO_DEBUG=0.
+        """
+        code = (
+            "import os; os.environ['DEMO_SINGLE_HOST'] = '1'; os.environ['DJANGO_DEBUG'] = '0'; "
+            "import settings; print(settings.DEMO_SINGLE_HOST)"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            cwd=BASE_DIR,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.stdout.strip(), "False")
+
+
 class TheDeploymentChecklistTests(SimpleTestCase):
     def test_check_deploy_is_clean_under_production_env(self):
         """Django's deployment checklist, and this project's own checks

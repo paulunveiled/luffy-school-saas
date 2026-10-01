@@ -88,6 +88,19 @@ urlpatterns = [
     path("check/", checker_page, name="result-checker"),
 ]
 
+from django.conf import settings
+
+if settings.DEMO_SINGLE_HOST:
+    from accounts.views import sign_in_page, staff_sign_in_page
+
+    urlpatterns.extend(
+        [
+            path("sign-in/", sign_in_page, name="sign-in"),
+            path("staff-sign-in/", staff_sign_in_page, name="staff-sign-in"),
+        ]
+    )
+
+
 #: The 403 page, named here so **a school's host** has one — which is the host
 #: `SchoolAccessMiddleware` refuses people on, and therefore the only host where
 #: its two refusals are ever raised. Django resolves this off the urlconf in
